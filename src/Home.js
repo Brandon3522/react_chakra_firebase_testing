@@ -39,8 +39,10 @@ function Home() {
   const [users, setUsers] = useState([]);
   const [flashcards, setFlashcards] = useState([]);
   const [studyDecks, setStudyDecks] = useState([]);
+  const [studyDeck_name, setStudyDeck_name] = useState('');
 
   const collectionRef = collection(database, 'users');
+  const userRef = collection(database, 'users', 'j5ZaxdlYUNE5w3GA4emp');
   const flashcards_ref = collection(
     database,
     'users',
@@ -55,6 +57,19 @@ function Home() {
     'j5ZaxdlYUNE5w3GA4emp',
     'study-decks'
   )
+
+  // add data to database
+  const add_studyDeck = () => {
+    addDoc(userRef, {
+        name: studyDeck_name.name,
+    })
+        .then(() => {
+            alert('Data Added');
+        })
+        .catch((err) => {
+            alert(err.message);
+        });
+  };
 
   const handleInput = event => {
     let newInput = { [event.target.name]: event.target.value };
@@ -175,6 +190,15 @@ function Home() {
         })}
       </Box>
       {/* Get all users */}
+      <br></br>
+      <Box>
+      <FormControl>
+        <FormLabel>Study Deck</FormLabel>
+        <Input type="email" onChange={e => setStudyDeck_name(e.target.value)} />
+        <Button onClick={add_studyDeck}></Button>
+      </FormControl>
+
+      </Box>
 
       <br></br>
       <br></br>
