@@ -78,7 +78,7 @@ function Home() {
     setuserData({ ...userData, ...newInput });
   };
 
-  // Retrieve the flashcards under the specified user
+  // Retrieve the flashcards under the specified user when called
   const getData = () => {
     getDocs(flashcards_ref).then(response => {
       console.log(
@@ -89,6 +89,7 @@ function Home() {
     });
   };
 
+  // get all study decks from user on page load
   useEffect(() => {
     const getStudyDecks = async () => {
       const data =  await getDocs(studyDecks_ref);
@@ -101,6 +102,7 @@ function Home() {
     getStudyDecks();
   }, [])
 
+  // get all flashcards from study deck on page load
   useEffect(() => {
     const getFlashcards = async () => {
       const data = await getDocs(flashcards_ref);
