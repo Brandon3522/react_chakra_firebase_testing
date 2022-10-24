@@ -68,6 +68,8 @@ function Home() {
     'study-decks'
   )
 
+  // Examples in my github repo: react_chakra_firebase_testing - src/home.js
+
   // Add study deck to database
   // Database reference: const user_studyDeck_ref = collection(database, 'users', userID, 'study-decks');
   // State: const [studyDeck_name, setStudyDeck_name] = useState('');
