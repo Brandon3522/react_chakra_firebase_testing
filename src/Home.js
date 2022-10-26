@@ -49,6 +49,8 @@ function Home() {
   const [flashcard_question, setFlashcard_question] = useState('');
   const [flashcard_answer, setFlashcard_answer] = useState('');
   const [user_score, setUsers_score] = useState(0);
+  const [flashcardName, setFlashcardName] = useState('');
+  const [delete_studyDeckName, setDelete_StudyDeckName] = useState('');
 
   const collectionRef = collection(database, 'users');
   const user_ref = doc(database, 'users', userID);
@@ -203,6 +205,43 @@ function Home() {
     getUsers()
   }, [])
 
+
+  // Delete flashcard
+  // Data needed: Study deck doc ID, and flaschard doc ID
+  const delete_flashcard = () => {
+
+
+
+  }
+
+
+
+
+  // Delete study deck
+  // Data needed: Study deck ID
+  const delete_studyDeck = () => {
+
+
+
+  }
+
+
+  // Update flashcard
+
+
+
+  // Update user score
+
+
+
+  // Retireve user info
+
+
+
+  // Update user info
+
+
+
   return (
     <Box>
       <FormControl>
@@ -309,6 +348,29 @@ function Home() {
       {/* Add flashcard subcollection and values */}
       <br></br>
 
+      {/* Delete flashcard */}
+      <Box>
+      <FormControl>
+        <FormLabel>Delete flashcard by name</FormLabel>
+        <Input type="text" onChange={e => setFlashcardName(e.target.value)} />
+        <Button onClick={delete_flashcard}>Delete flashcard</Button>
+      </FormControl>
+      </Box>
+      {/* Delete flashcard */}
+      <br></br>
+      
+      {/* Delete study deck */}
+      <Box>
+      <FormControl>
+        <FormLabel>Delete study deck by name</FormLabel>
+        <Input type="text" onChange={e => setDelete_StudyDeckName(e.target.value)} />
+        <Button onClick={delete_studyDeck}>Delete study deck</Button>
+      </FormControl>
+      </Box>
+      {/* Delete study deck */}
+      <br></br>
+
+      
       <Text>
         Database data: {userData.score} {userData.email} {userData.password}
       </Text>
