@@ -208,10 +208,27 @@ function Home() {
 
   // Delete flashcard
   // Data needed: Study deck doc ID, and flaschard doc ID
-  const delete_flashcard = () => {
+  const delete_flashcard = async (flashcardName) => {
+    const q = query(flashcards_ref, where('question', '==', flashcardName), limit(1))
+    console.log(q)
 
+    const docs = await getDocs(q)
+    var doc_id = ''
+    docs.forEach((doc) => {
+      console.log(doc.data())
+      doc_id = doc.id
+      console.log(doc_id)
+    })
 
+    const flashcard = doc(database, 'users', userID, 'study-decks', studyDeck_ID, 'flashcards', doc_id)
 
+    // const flashcard_ref = getDoc(q);
+    // console.log(doc)
+    console.log('Before await')
+    await deleteDoc(flashcard);
+    console.log('After await')
+
+    console.log('Flashcard deleted successfully');
   }
 
 
@@ -303,10 +320,10 @@ function Home() {
         {users.map((user, i) => {
           return (
             <Box key={i}>
-              <Text key={i}>ID: {user.id}</Text>
-              <Text key={i}>Email: {user.email}</Text>
-              <Text key={i}>Password: {user.password}</Text>
-              <Text key={i}>Score: {user.score}</Text>
+              <Text key={user.id}>ID: {user.id}</Text>
+              <Text key={user.email}>Email: {user.email}</Text>
+              <Text key={user.password}>Password: {user.password}</Text>
+              <Text key={user.score}>Score: {user.score}</Text>
             </Box>
           )
         })}
@@ -353,7 +370,7 @@ function Home() {
       <FormControl>
         <FormLabel>Delete flashcard by name</FormLabel>
         <Input type="text" onChange={e => setFlashcardName(e.target.value)} />
-        <Button onClick={delete_flashcard}>Delete flashcard</Button>
+        <Button onClick={() => delete_flashcard(flashcardName)}>Delete flashcard</Button>
       </FormControl>
       </Box>
       {/* Delete flashcard */}
@@ -364,7 +381,7 @@ function Home() {
       <FormControl>
         <FormLabel>Delete study deck by name</FormLabel>
         <Input type="text" onChange={e => setDelete_StudyDeckName(e.target.value)} />
-        <Button onClick={delete_studyDeck}>Delete study deck</Button>
+        <Button onClick={() => delete_studyDeck()}>Delete study deck</Button>
       </FormControl>
       </Box>
       {/* Delete study deck */}
