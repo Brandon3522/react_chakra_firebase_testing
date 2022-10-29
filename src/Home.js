@@ -51,6 +51,7 @@ function Home() {
   const [user_score, setUsers_score] = useState(0);
   const [flashcardName, setFlashcardName] = useState('');
   const [delete_studyDeckName, setDelete_StudyDeckName] = useState('');
+  const [display_studyDeckName, setDislpay_studyDeckName] = useState('');
 
   const collectionRef = collection(database, 'users');
   const user_ref = doc(database, 'users', userID);
@@ -119,8 +120,22 @@ function Home() {
       .catch((err) => {
           alert(err.message);
       });
-
   }
+
+  // Get study name
+  // Database reference: const studyDeckName_ref = doc(database, 'users', userID, 'study-decks', studyDeck_ID)
+  // State: const [display_studyDeckName, setDislpay_studyDeckName] = useState('');
+  useEffect(() => {
+    const getStudyDeckName = async () => {
+      const data =  await getDoc(studyDeckName_ref);
+
+      const name = data.data().name;
+
+      setDislpay_studyDeckName(name);
+
+    }
+    getStudyDeckName();
+  }, [])
 
   // const handleInput = event => {
   //   let newInput = { [event.target.name]: event.target.value };
@@ -208,6 +223,8 @@ function Home() {
 
   // Delete flashcard
   // Data needed: Study deck doc ID, and flaschard doc ID
+  // Database reference: const flashcards_ref = collection(database,'users',userID,'study-decks',studyDeck_ID,'flashcards');
+  // State: const [flashcardName, setFlashcardName] = useState('');
   const delete_flashcard = async (flashcardName) => {
     const q = query(flashcards_ref, where('question', '==', flashcardName), limit(1))
     console.log(q)
@@ -222,11 +239,7 @@ function Home() {
 
     const flashcard = doc(database, 'users', userID, 'study-decks', studyDeck_ID, 'flashcards', doc_id)
 
-    // const flashcard_ref = getDoc(q);
-    // console.log(doc)
-    console.log('Before await')
     await deleteDoc(flashcard);
-    console.log('After await')
 
     console.log('Flashcard deleted successfully');
   }
@@ -236,10 +249,23 @@ function Home() {
 
   // Delete study deck
   // Data needed: Study deck ID
-  const delete_studyDeck = () => {
+  // Database reference: const studyDecks_ref = collection(database,'users',userID,'study-decks')
+  // State: const [delete_studyDeckName, setDelete_StudyDeckName] = useState('');
+  const delete_studyDeck = async (delete_studyDeckName) => {
+    const q = query(studyDecks_ref, where('name', '==', delete_studyDeckName), limit(1));
+    console.log(q);
 
+    const docs = await getDocs(q);
+    var doc_id = ''
+    docs.forEach((doc) => {
+      doc_id = doc.id
+    })
 
+    const studyDeck = doc(database, 'users', userID, 'study-decks', doc_id);
 
+    await deleteDoc(studyDeck);
+
+    console.log('Study Deck deleted successfully');
   }
 
 
@@ -282,6 +308,16 @@ function Home() {
         })}
       </Box>
       {/* Get all flashcards from study deck */}
+      <br></br>
+
+      {/* Get study deck name */}
+      <Box>
+        <Heading>STUDY DECK NAME</Heading>
+          <Box>
+            <Text>Name: {display_studyDeckName}</Text>
+          </Box>
+      </Box>      
+      {/* Get study deck name */}
       <br></br>
 
       {/* Get all study decks */}
@@ -381,7 +417,7 @@ function Home() {
       <FormControl>
         <FormLabel>Delete study deck by name</FormLabel>
         <Input type="text" onChange={e => setDelete_StudyDeckName(e.target.value)} />
-        <Button onClick={() => delete_studyDeck()}>Delete study deck</Button>
+        <Button onClick={() => delete_studyDeck(delete_studyDeckName)}>Delete study deck</Button>
       </FormControl>
       </Box>
       {/* Delete study deck */}
