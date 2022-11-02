@@ -13,6 +13,7 @@ import {
   FormHelperText,
   Input,
   Button,
+  Center,
 } from '@chakra-ui/react';
 import { app, database } from './firebase.js';
 import { useState, useEffect } from 'react';
@@ -52,6 +53,7 @@ function Home() {
   const [flashcardName, setFlashcardName] = useState('');
   const [delete_studyDeckName, setDelete_StudyDeckName] = useState('');
   const [display_studyDeckName, setDislpay_studyDeckName] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const collectionRef = collection(database, 'users');
   const user_ref = doc(database, 'users', userID);
@@ -69,6 +71,14 @@ function Home() {
     'users',
     userID,
     'study-decks'
+  )
+
+  const studyDeckName_ref = doc(
+    database,
+    'users',
+    userID,
+    'study-decks',
+    studyDeck_ID
   )
 
   // Examples in my github repo: react_chakra_firebase_testing - src/home.js
@@ -199,6 +209,13 @@ function Home() {
       setFlashcards(data.docs.map((doc) => ({
         ...doc.data(), id: doc.id
       })))
+
+      data.docs.map((doc) => {
+        return console.log(doc.data())
+      })
+      // console.log(flashcards[0].question)
+      setLoading(false);
+      
     }
 
     getFlashcards()
@@ -245,8 +262,6 @@ function Home() {
   }
 
 
-
-
   // Delete study deck
   // Data needed: Study deck ID
   // Database reference: const studyDecks_ref = collection(database,'users',userID,'study-decks')
@@ -272,10 +287,22 @@ function Home() {
   // Update flashcard
 
 
-
   // Update user score
+  // Database reference: const user_ref = doc(database, 'users', userID);
+  // State: const [user_score, setUsers_score] = useState(0);
+  const updateUserScore = async (value) => {
+    const data =  await getDoc(user_ref);
 
+    var score = data.data().score + value;
+    console.log(score)
+    setUsers_score(score) 
 
+    await updateDoc(user_ref, {
+      score: score
+    })
+
+    console.log('Score updated');
+  }
 
   // Retireve user info
 
@@ -284,6 +311,12 @@ function Home() {
   // Update user info
 
 
+
+  if (loading) {
+    return (
+      <Heading textAlign={'center'}>Loading...</Heading>
+    )
+  }
 
   return (
     <Box>
@@ -308,6 +341,17 @@ function Home() {
         })}
       </Box>
       {/* Get all flashcards from study deck */}
+      <br></br>
+
+      {/* Flashcard individual object */}
+      <Box>
+        <Heading>Individual flashcards</Heading>
+        <Text>{flashcards[0].answer}</Text>
+        <Text>{flashcards.length}</Text>
+
+      </Box>
+
+      {/* Flashcard individual object */}
       <br></br>
 
       {/* Get study deck name */}
@@ -373,6 +417,16 @@ function Home() {
         <Text>User Score: {user_score}</Text>
       </Box>
       {/* Get user score */}
+      <br></br>
+      
+      {/* Update User Score */}
+        <Box>
+          <Heading>USER SCORE UPDATE</Heading>
+          <Text>User Score: {user_score}</Text>
+          <Button onClick={() => updateUserScore(2)}>Update score by value</Button>
+
+        </Box>
+      {/* Update User Score */}
       <br></br>
 
       {/* Add study deck by name */}
