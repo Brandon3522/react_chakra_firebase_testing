@@ -52,6 +52,9 @@ function Home() {
   const [flashcardName, setFlashcardName] = useState('');
   const [delete_studyDeckName, setDelete_StudyDeckName] = useState('');
 
+  // Get user on page load state
+  const [user, setUser] = useState({})
+
   const collectionRef = collection(database, 'users');
   const user_ref = doc(database, 'users', userID);
   const user_studyDeck_ref = collection(database, 'users', userID, 'study-decks');
@@ -95,7 +98,6 @@ function Home() {
       const data =  await getDoc(user_ref);
 
       const score = data.data().score;
-      console.log(score)
       setUsers_score(score)
 
     }
@@ -119,7 +121,6 @@ function Home() {
       .catch((err) => {
           alert(err.message);
       });
-
   }
 
   // const handleInput = event => {
@@ -204,6 +205,14 @@ function Home() {
 
     getUsers()
   }, [])
+
+  // Get user on page load
+  // Data needed: User ID
+  // Database ref: const user_ref = doc(database, 'users', userID);
+  // State: const [user, setUser] = useState({})
+  const get_user = () => {
+    
+  }
 
 
   // Delete flashcard
@@ -368,6 +377,13 @@ function Home() {
       </FormControl>
       </Box>
       {/* Delete study deck */}
+      <br></br>
+
+      {/* Retireve User info */}
+        <Box>
+
+        </Box>
+      {/* Retireve User info */}
       <br></br>
 
       
